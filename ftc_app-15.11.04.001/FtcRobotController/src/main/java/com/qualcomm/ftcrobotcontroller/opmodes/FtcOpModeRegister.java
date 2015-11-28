@@ -71,8 +71,10 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("Color Test", AdafruitRGBExample.class);
     manager.register("MR Gyro Test", MRGyroTest.class);
 
-    manager.register("TeleOp", TeleOp_4w.class);
-    manager.register("Auto", Auto.class);
+    manager.register("TeleOp", TeleOp.class);
+    manager.register("Auto1", Auto.class);
+    manager.register("AutoServo", AutoServo.class);
+    manager.register("Acceleometer", AccOp.class);
 
     //manager.register("AdafruitRGBExample", AdafruitRGBExample.class);
     //manager.register("ColorSensorDriver", ColorSensorDriver.class);
