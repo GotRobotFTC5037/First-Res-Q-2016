@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.Range;
 
@@ -50,7 +51,16 @@ public class TeleOp_4w extends OpMode
 	DcMotor motorRight2;
 	DcMotor motorLeft1;
 	DcMotor motorLeft2;
+	Servo servoLeft1;
+	Servo servoRight1;
+	Servo Climberservo;
+	Servo Lightservo;
+	Servo Buttonservo;
+	//Servo Testservo;
 
+	int servoCnt = 0;
+	double buttonPos;
+	final double SERVO_STOP = 0.495;
 	/**
 	 * Constructor
 	 */
@@ -65,15 +75,29 @@ public class TeleOp_4w extends OpMode
 	 * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#init()
 	 */
 	@Override
-	public void init()
-	{
+	public void init() {
 		motorRight1 = hardwareMap.dcMotor.get("motor_RF");
 		motorRight2 = hardwareMap.dcMotor.get("motor_RB");
 		motorLeft1 = hardwareMap.dcMotor.get("motor_LF");
 		motorLeft2 = hardwareMap.dcMotor.get("motor_LB");
+//		servoLeft1 = hardwareMap.servo.get("servo_L");
+//		servoRight1 = hardwareMap.servo.get("servo_R");
+		Climberservo = hardwareMap.servo.get("C_servo");
+		Lightservo = hardwareMap.servo.get("Li_servo");
+		Buttonservo = hardwareMap.servo.get("Bu_servo");
+		//Testservo = hardwareMap.servo.get("TEST");
 
+		Buttonservo.setPosition(0.55);
+		Climberservo.setPosition(0.0);
+		//Lightservo.setPosition(0.4);
+		//servoLeft1.setPosition(0.48);
+		//servoRight1.setPosition(0.48);
+		//Testservo.setPosition(SERVO_STOP);
+
+		motorLeft2.setDirection(DcMotor.Direction.FORWARD);
+		motorRight2.setDirection(DcMotor.Direction.REVERSE);
 		motorLeft1.setDirection(DcMotor.Direction.REVERSE);
-		motorLeft2.setDirection(DcMotor.Direction.REVERSE);
+		motorRight1.setDirection(DcMotor.Direction.FORWARD);
 	}
 
 	/*
@@ -83,6 +107,10 @@ public class TeleOp_4w extends OpMode
 	 */
 	@Override
 	public void loop() {
+
+		double active = .01;
+
+		double Servopostion = .0;
 
 		/*
 		 * Gamepad 1
@@ -95,7 +123,7 @@ public class TeleOp_4w extends OpMode
 		// 1 is full down
 		// direction: left_stick_x ranges from -1 to 1, where -1 is full left
 		// and 1 is full right
-		float leftThrottle =  gamepad1.left_stick_y;
+		float leftThrottle = gamepad1.left_stick_y;
 		float rightThrottle = gamepad1.right_stick_y;
 		float right = rightThrottle;
 		float left = leftThrottle;
@@ -112,35 +140,92 @@ public class TeleOp_4w extends OpMode
 
 		// scale the joystick value to make it easier to control
 		// the robot more precisely at slower speeds.
-		right = (float)scaleInput(right);
-		left =  (float)scaleInput(left);
+		right = (float) scaleInput(right);
+		left = (float) scaleInput(left);
 
 		// write the values to the motors
 		motorRight1.setPower(right);
 		motorRight2.setPower(right);
 		motorLeft1.setPower(left);
 		motorLeft2.setPower(left);
+
 		// update the position of the arm.
 		if (gamepad1.a)
 		{
+			Buttonservo.setPosition(0.55);
+			Climberservo.setPosition(0.0);
 
+			//Servopostion += active;
+			//servoLeft1.setPosition(Servopostion);
+			//servoRight1.setPosition(Servopostion);
+
+			// else
+			// {
+			//servoLeft1.setPosition(0.55);
+			//servoRight1.setPosition(0.55);
+			//}
 		}
+
 
 		if (gamepad1.y)
 		{
-
+			Climberservo.setPosition(1.0);
+//			if (0 == servoCnt)
+//			{
+//				Testservo.setPosition(1.0);
+//				servoCnt = 1;
+//
+//			}
+////			if (Testservo.getPosition() == buttonPos)
+////			{
+////				servoCnt = 0;
+////			}
 		}
+//		else if (gamepad1.b)
+//		{
+//			if (0 == servoCnt)
+//			{
+//				Testservo.setPosition(0.0);
+//				servoCnt = 1;
+//
+//			}
+//		}
+
+//		else
+//		{
+//			Testservo.setPosition(SERVO_STOP);
+//			servoCnt = 0;
+//		}
+
 
 		// update the position of the claw
 		if (gamepad1.x)
 		{
+			Buttonservo.setPosition(0.0);
+			//Lightservo.setPosition(Lightservo.getPosition()-.10);
 
 		}
 
 		if (gamepad1.b)
 		{
-
+			Buttonservo.setPosition(1.0);
 		}
+//			if (0 == servoCnt)
+//			{
+//				servoCnt = 1;
+//				buttonPos = Lightservo.getPosition() + .10;
+//				if (buttonPos > 1.0) buttonPos = 1.0;
+//				Lightservo.setPosition(buttonPos);
+//			}
+//			if (Lightservo.getPosition() == buttonPos)
+//			{
+//				servoCnt = 0;
+//			}
+//
+//		}
+//
+//		else
+//			servoCnt = 0;
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
@@ -153,6 +238,8 @@ public class TeleOp_4w extends OpMode
         telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", right));
 		//telemetry.addData("IR", "IR_Value:" + String.format("%.5b", IrSensorValue));
 		//telemetry.addData("Distance", "Dist Val:" + String.format("%5d", distanceSensorValue));
+		//telemetry.addData("servo", "amount: " + String.format("%.3f", Buttonservo.getPosition()));
+		//telemetry.addData("servo", "degree: " + String.format("%.3f", Testservo.getPosition()));
 	}
 
 	/*

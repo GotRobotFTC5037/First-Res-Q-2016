@@ -59,19 +59,11 @@ public class Sensor_Test extends OpMode
 	public void init()
 	{
 		DistSensor=hardwareMap.opticalDistanceSensor.get("Dist_Sensor");
-
-}
-
-	/*
-	 * This method will be called repeatedly in a loop
-	 * 
-	 *
-	 * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#run()
-	 */
+	}
 	@Override
 	public void loop()
 	{
-		telemetry.addData("Distance", "Dist Val:" + String.format("Dist", DistSensor.getLightDetected()));
+		telemetry.addData("Distance", DistSensor.getLightDetected());
 	}
 
 	@Override
