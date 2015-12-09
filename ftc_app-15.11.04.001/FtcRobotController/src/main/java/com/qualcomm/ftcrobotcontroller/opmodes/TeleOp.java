@@ -33,6 +33,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -42,8 +43,12 @@ import com.qualcomm.robotcore.util.Range;
  */
 public class TeleOp extends OpMode
 {
-	DcMotor motorRight1;
-	DcMotor motorLeft1;
+	//DcMotor motorRight1;
+	//DcMotor motorLeft1;
+	Servo Buttonservo;
+	Servo Lightservo;
+	Servo Climberservo;
+
 
 	/**
 	 * Constructor
@@ -60,8 +65,14 @@ public class TeleOp extends OpMode
 	 */
 	@Override
 	public void init() {
-		motorRight1 = hardwareMap.dcMotor.get("motor_1");
-		motorLeft1 = hardwareMap.dcMotor.get("motor_2");
+//		motorRight1 = hardwareMap.dcMotor.get("motor_1");
+//		motorLeft1 = hardwareMap.dcMotor.get("motor_2");
+		Lightservo = hardwareMap.servo.get("Li_servo");
+		Buttonservo = hardwareMap.servo.get("Bu_servo");
+		Climberservo = hardwareMap.servo.get("C_servo");
+
+		Climberservo.setPosition(0.00);
+		Buttonservo.setPosition(0.50);
 
 		//motorLeft1.setDirection(DcMotor.Direction.REVERSE);
 	}
@@ -85,10 +96,10 @@ public class TeleOp extends OpMode
 		// 1 is full down
 		// direction: left_stick_x ranges from -1 to 1, where -1 is full left
 		// and 1 is full right
-		float leftThrottle =  gamepad1.left_stick_y;
-		float rightThrottle = gamepad1.right_stick_y;
-		float right = rightThrottle;
-		float left = leftThrottle;
+//		float leftThrottle =  gamepad1.left_stick_y;
+//		float rightThrottle = gamepad1.right_stick_y;
+//		float right = rightThrottle;
+//		float left = leftThrottle;
 
 		//boolean touching = touchSensor.isPressed();
 
@@ -97,48 +108,93 @@ public class TeleOp extends OpMode
 		//int distanceSensorValue = distanceSensor.getLightDetectedRaw();
 
 		// clip the right/left values so that the values never exceed +/- 1
-		right = Range.clip(right, -1, 1);
-		left = Range.clip(left, -1, 1);
-
-		// scale the joystick value to make it easier to control
-		// the robot more precisely at slower speeds.
-		right = (float)scaleInput(right);
-		left =  (float)scaleInput(left);
-
-		// write the values to the motors
-		motorRight1.setPower(right);
-		motorLeft1.setPower(left);
+//
 		// update the position of the arm.
 		if (gamepad1.a)
 		{
+			Buttonservo.setPosition(0.55);
+			Climberservo.setPosition(0.0);
 
+			//Servopostion += active;
+			//servoLeft1.setPosition(Servopostion);
+			//servoRight1.setPosition(Servopostion);
+
+			// else
+			// {
+			//servoLeft1.setPosition(0.55);
+			//servoRight1.setPosition(0.55);
+			//}
 		}
+
 
 		if (gamepad1.y)
 		{
-
+			Climberservo.setPosition(1.0);
+//			if (0 == servoCnt)
+//			{
+//				Testservo.setPosition(1.0);
+//				servoCnt = 1;
+//
+//			}
+////			if (Testservo.getPosition() == buttonPos)
+////			{
+////				servoCnt = 0;
+////			}
 		}
+//		else if (gamepad1.b)
+//		{
+//			if (0 == servoCnt)
+//			{
+//				Testservo.setPosition(0.0);
+//				servoCnt = 1;
+//
+//			}
+//		}
+
+//		else
+//		{
+//			Testservo.setPosition(SERVO_STOP);
+//			servoCnt = 0;
+//		}
+
 
 		// update the position of the claw
 		if (gamepad1.x)
 		{
+			Buttonservo.setPosition(0.0);
+			//Lightservo.setPosition(Lightservo.getPosition()-.10);
 
 		}
 
 		if (gamepad1.b)
 		{
-
+			Buttonservo.setPosition(1.0);
 		}
-
+//			if (0 == servoCnt)
+//			{
+//				servoCnt = 1;
+//				buttonPos = Lightservo.getPosition() + .10;
+//				if (buttonPos > 1.0) buttonPos = 1.0;
+//				Lightservo.setPosition(buttonPos);
+//			}
+//			if (Lightservo.getPosition() == buttonPos)
+//			{
+//				servoCnt = 0;
+//			}
+//
+//		}
+//
+//		else
+//			servoCnt = 0;
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
 		 * a legacy NXT-compatible motor controller, then the getPower() method
 		 * will return a null value. The legacy NXT-compatible motor controllers
 		 * are currently write only.
 		 */
-        telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("left tgt pwr",  "left  pwr: " + String.format("%.2f", left));
-        telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", right));
+//        telemetry.addData("Text", "*** Robot Data***");
+//        telemetry.addData("left tgt pwr",  "left  pwr: " + String.format("%.2f", left));
+//        telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", right));
 		//telemetry.addData("IR", "IR_Value:" + String.format("%.5b", IrSensorValue));
 		//telemetry.addData("Distance", "Dist Val:" + String.format("%5d", distanceSensorValue));
 	}
