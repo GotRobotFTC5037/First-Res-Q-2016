@@ -47,11 +47,6 @@ public class TeleOp extends OpMode
 
 	final int LIFT_HIGH_POS = 8240;
 
-	public TeleOp()
-	{
-
-	}
-
 	//==============================================================
 	//intialization of all the hardware and direction and posititon of all the servos
 	//==============================================================
@@ -62,16 +57,16 @@ public class TeleOp extends OpMode
 		motorRight2 = hardwareMap.dcMotor.get("motor_right_2");
 		motorLeft1 = hardwareMap.dcMotor.get("motor_left_1");
 		motorLeft2 = hardwareMap.dcMotor.get("motor_left_2");
-		Liftmotor = hardwareMap.dcMotor.get("Liftmotor");
-		Winchmotor = hardwareMap.dcMotor.get("Winchmotor");
+//		Liftmotor = hardwareMap.dcMotor.get("Liftmotor");
+//		Winchmotor = hardwareMap.dcMotor.get("Winchmotor");
 //		servoLeft1 = hardwareMap.servo.get("servo_L");
 //		servoRight1 = hardwareMap.servo.get("servo_R");
-		Climberservo = hardwareMap.servo.get("climber");
+//		Climberservo = hardwareMap.servo.get("climber");
 //		Lightservo = hardwareMap.servo.get("Li_servo");
-		GateServo = hardwareMap.servo.get("gateservo");
-		MountainservoRight = hardwareMap.servo.get("msLeft");
-		MountainservoLeft = hardwareMap.servo.get("msRight");
-		EOPDServo = hardwareMap.servo.get("EOPDServo");
+//		GateServo = hardwareMap.servo.get("gateservo");
+//		MountainservoRight = hardwareMap.servo.get("msLeft");
+//		MountainservoLeft = hardwareMap.servo.get("msRight");
+//		EOPDServo = hardwareMap.servo.get("EOPDServo");
 
 		//servoLeft1.setPosition(0.48);
 		GateServo.setPosition(0.575);
@@ -195,7 +190,8 @@ public class TeleOp extends OpMode
 			}
 */
 			if (gamepad1.y) gp1m_winch = true;
-			else gp1m_winch = gamepad1.a;
+			else if (gamepad1.a) gp1m_winch = true;
+			else gp1m_winch = false;
 
 			if ((Math.abs(gamepad1.left_stick_y) >= 0.20) || (Math.abs(gamepad1.right_stick_y) >= 0.20)) {
 				leftDriveSet(gamepad1.left_stick_y);

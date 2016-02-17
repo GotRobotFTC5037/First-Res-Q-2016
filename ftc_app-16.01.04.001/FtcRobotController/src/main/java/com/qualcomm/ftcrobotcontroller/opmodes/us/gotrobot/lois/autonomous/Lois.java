@@ -25,7 +25,7 @@ public class Lois
     private StateManager stateManager = new StateManager();
     private SensorManager sensorManager = new SensorManager();
     private ServoManager servoManager = new ServoManager();
-    private MotorManager motorManager = new MotorManager();
+    private MotorManager motorManager = new MotorManager(presets);
 
     public ServoManager getServoManager()
     {
@@ -50,11 +50,20 @@ public class Lois
         return presets;
     }
 
-    public DefaultDrive robotDrive = new DefaultDrive(getPresets(), getStateManager(), getMotorManager(), getSensorManager());
-    public UltrasonicDrive robotUltrasonicDrive = new UltrasonicDrive(getPresets(), getStateManager(), getMotorManager(), getSensorManager());
-    public DefaultTurn robotTurn = new DefaultTurn(getStateManager(), getMotorManager(), getSensorManager());
-    public EopdTurn robotLightTurn = new EopdTurn(getStateManager(), getMotorManager(), getSensorManager());
-    public PressBeaconButon pressBeaconButon = new PressBeaconButon(getPresets(), getStateManager(), getMotorManager(), getServoManager(), getSensorManager());
+    public DefaultDrive robotDrive = new DefaultDrive(getPresets(), getStateManager(),
+            getMotorManager(), getSensorManager());
+
+    public UltrasonicDrive robotUltrasonicDrive = new UltrasonicDrive(getPresets(),
+            getStateManager(), getMotorManager(), getSensorManager());
+
+    public DefaultTurn robotTurn = new DefaultTurn(getStateManager(), getMotorManager(),
+            getSensorManager());
+
+    public EopdTurn robotLightTurn = new EopdTurn(getStateManager(), getMotorManager(),
+            getSensorManager());
+
+    public PressBeaconButon pressBeaconButon = new PressBeaconButon(getPresets(), getStateManager(),
+            getMotorManager(), getServoManager(), getSensorManager());
 
     public void init()
     {
@@ -93,20 +102,27 @@ public class Lois
         getMotorManager().getLeftMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
 
         /* */
-        getSensorManager().getLightSensorHolder().setLightSensor(hardwareMap.lightSensor.get("ODS"));
-        getSensorManager().getLightSensorHolder().setInitalEOPDValue(getSensorManager().getLightSensorHolder().getLightDetected());
+        getSensorManager().getLightSensorHolder().setLightSensor
+                (hardwareMap.lightSensor.get("ODS"));
+
+        getSensorManager().getLightSensorHolder().setInitalEOPDValue(getSensorManager().
+                getLightSensorHolder().getLightDetected());
 
         /* */
-        getSensorManager().getUltrasonicSensorHolder().setUltrasonicSensor(hardwareMap.ultrasonicSensor.get("ultrasonicSensorHolder"));
+        getSensorManager().getUltrasonicSensorHolder().setUltrasonicSensor
+                (hardwareMap.ultrasonicSensor.get("ultrasonicSensorHolder"));
 
         /* */
-        getSensorManager().getColorSensorHolder().setColorSensor(hardwareMap.colorSensor.get("color"));
+        getSensorManager().getColorSensorHolder().setColorSensor
+                (hardwareMap.colorSensor.get("color"));
 
         /* */
         getServoManager().setBeaconServo(hardwareMap.servo.get("beaconservo"));
 
         /* */
-        getSensorManager().getGyroscopeHolder().setGyroSensor(hardwareMap.gyroSensor.get("gyroscopeHolder"));
+        getSensorManager().getGyroscopeHolder().setGyroSensor(hardwareMap.gyroSensor.
+                get("gyroscopeHolder"));
+
         getSensorManager().getGyroscopeHolder().getGyroSensor().calibrate();
         getSensorManager().getGyroscopeHolder().getGyroSensor().resetZAxisIntegrator();
     }

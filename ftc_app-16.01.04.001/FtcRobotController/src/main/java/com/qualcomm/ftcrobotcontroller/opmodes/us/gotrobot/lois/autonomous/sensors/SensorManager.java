@@ -6,7 +6,7 @@ public class SensorManager
     private LightSensorHolder lightSensorHolder = new LightSensorHolder();
     private GyroscopeHolder gyroscopeHolder = new GyroscopeHolder();
     private UltrasonicSensorHolder ultrasonicSensorHolder = new UltrasonicSensorHolder();
-    private AccelerometerHolder accelerometerHolder = new AccelerometerHolder();
+    //private AccelerometerHolder accelerometerHolder = new AccelerometerHolder();
 
     public ColorSensorHolder getColorSensorHolder() {
         return colorSensorHolder;
@@ -40,6 +40,7 @@ public class SensorManager
         this.ultrasonicSensorHolder = ultrasonicSensorHolder;
     }
 
+    /*
     public AccelerometerHolder getAccelerometerHolder() {
         return accelerometerHolder;
     }
@@ -47,4 +48,5 @@ public class SensorManager
     public void setAccelerometerHolder(AccelerometerHolder accelerometerHolder) {
         this.accelerometerHolder = accelerometerHolder;
     }
+    */
 }

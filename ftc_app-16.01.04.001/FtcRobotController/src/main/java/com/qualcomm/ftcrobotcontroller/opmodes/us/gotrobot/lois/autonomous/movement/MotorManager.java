@@ -1,13 +1,21 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.movement;
 
+import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.control.Preferences;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class MotorManager
 {
+    Preferences presets;
+
     private DcMotor rightMotor1;
     private DcMotor leftMotor1;
     private DcMotor leftMotor2;
     private DcMotor rightMotor2;
+
+    public MotorManager(Preferences presets)
+    {
+        this.presets = presets;
+    }
 
     public DcMotor getRightMotor1() {
         return rightMotor1;
@@ -39,5 +47,25 @@ public class MotorManager
 
     public void setRightMotor2(DcMotor rightMotor2) {
         this.rightMotor2 = rightMotor2;
+    }
+
+    public double calculateEncoderValue(double inches)
+    {
+        return (1440 * (inches/(Math.PI * presets.getWHEEL_DIAMETER()))) * presets.getGEAR_RATIO();
+    } //calculateEncoderValue
+
+    public boolean robotReachedTargetDistance(double targetDistance)
+    {
+        if(Math.abs(getLeftMotor2().getCurrentPosition()) >=
+                Math.abs(calculateEncoderValue(targetDistance))&&
+                Math.abs(getRightMotor2().getCurrentPosition()) >=
+                        Math.abs(calculateEncoderValue(targetDistance)))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
