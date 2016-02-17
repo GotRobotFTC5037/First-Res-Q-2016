@@ -7,35 +7,22 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 
 public class UltrasonicDrive
 {
+    Preferences presets;
     StateManager stateManager;
     MotorManager motorManager;
     SensorManager sensorManager;
 
-    double rightCorrection = 0;
-    double leftCorrecion = 0;
-
-    private final double robotGearRatio = 2;
-    private final double robotWheelDiameter = 5.3;
-
-    public UltrasonicDrive(Preferences prsets, StateManager stateManager, MotorManager motorManager, SensorManager sensorManager)
+    public UltrasonicDrive(Preferences presets, StateManager stateManager, MotorManager motorManager,
+                           SensorManager sensorManager)
     {
+        this.presets = presets;
         this.stateManager = stateManager;
         this.motorManager = motorManager;
         this.sensorManager = sensorManager;
     }
 
-    public double getRobotGearRatio() {
-        return robotGearRatio;
-    } //getGearRatio
-
-    public double getRobotWheelDiameter() {
-        return robotWheelDiameter;
-    } //getWheelDiameter
-
-    private double calcEncoderValue(double inches)
-    {
-        return (1440 * (inches/(Math.PI * getRobotWheelDiameter()))) * getRobotGearRatio();
-    } //calcEncoderValue
+    private GyroCorrection gyroCorrection = new GyroCorrection(presets, stateManager, motorManager,
+            sensorManager);
 
     public void ultrasonicDriveWithCorrection(double speed, double ThreshholdDistance)
     {
@@ -77,37 +64,10 @@ public class UltrasonicDrive
 
                 stateManager.continueProgram();
             }
-                /*else
-                {
-                    leftCorrecion = speed-(getRotation()*errorCorrection);
-
-                    rightCorrection = speed+(getRotation()*errorCorrection);
-
-                    if (leftCorrecion>1)
-                    {
-                        leftCorrecion = 1;
-                    }
-                    else if (leftCorrecion<-1)
-                    {
-                        leftCorrecion = -1;
-                    }
-
-                    if (rightCorrection>1)
-                    {
-                        rightCorrection = 1;
-                    }
-                    else if (rightCorrection<-1)
-                    {
-                        rightCorrection = -1;
-                    }
-
-                    left_motor1.setPower(leftCorrecion);
-                    right_motor1.setPower(rightCorrection);
-                    left_motor2.setPower(leftCorrecion);
-                    right_motor2.setPower(rightCorrection);
-
-
-                }*/
+            else
+            {
+                gyroCorrection.GyroCorrection(speed);
+            }
         }
     }
 }
