@@ -4,6 +4,7 @@ import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.contr
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.sensors.SensorManager;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.control.StateManager;
+import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.movement.GyroCorrection;
 
 public class DefaultDrive
 {
@@ -11,11 +12,14 @@ public class DefaultDrive
     StateManager stateManager;
     MotorManager motorManager;
     SensorManager sensorManager;
+    private GyroCorrection gyroCorrection = new GyroCorrection(presets, stateManager, motorManager,
+            sensorManager);
 
     double rightCorrection = 0;
     double leftCorrecion = 0;
 
-    public DefaultDrive(Preferences presets, StateManager stateManager, MotorManager motorManager, SensorManager sensorManager)
+    public DefaultDrive(Preferences presets, StateManager stateManager, MotorManager motorManager,
+                        SensorManager sensorManager)
     {
         this.presets = presets;
         this.stateManager = stateManager;
@@ -23,12 +27,7 @@ public class DefaultDrive
         this.sensorManager = sensorManager;
     }
 
-    private double calcEncoderValue(double inches)
-    {
-        return (1440 * (inches/(Math.PI * presets.getWHEEL_DIAMETER()))) * presets.getGEAR_RATIO();
-    } //calcEncoderValue
-
-    public void driveWithCorrection(double speed, int distance)
+    public void driveWithCorrection(double speed, int targetDistance)
     {
         if (stateManager.getStateStage() == 0)
         {
@@ -57,7 +56,7 @@ public class DefaultDrive
         }
         else if (stateManager.getStateStage() == 1)
         {
-            if(Math.abs(motorManager.getLeftMotor2().getCurrentPosition()) >= Math.abs(calcEncoderValue(distance))&&Math.abs(motorManager.getRightMotor2().getCurrentPosition()) >= Math.abs(calcEncoderValue(distance)))
+            if(motorManager.robotReachedTargetDistance(targetDistance))
             {
                 motorManager.getLeftMotor1().setPower(0);
                 motorManager.getRightMotor1().setPower(0);
@@ -67,33 +66,9 @@ public class DefaultDrive
                 stateManager.continueProgram();
             }
             else
-                {
-                    leftCorrecion = speed-(sensorManager.getGyroscopeHolder().getRotation()*presets.getGYRO_ERROR_CORRECTION());
-                    rightCorrection = speed+(sensorManager.getGyroscopeHolder().getRotation()*presets.getGYRO_ERROR_CORRECTION());
-
-                    if (leftCorrecion>1)
-                    {
-                        leftCorrecion = 1;
-                    }
-                    else if (leftCorrecion<-1)
-                    {
-                        leftCorrecion = -1;
-                    }
-
-                    if (rightCorrection>1)
-                    {
-                        rightCorrection = 1;
-                    }
-                    else if (rightCorrection<-1)
-                    {
-                        rightCorrection = -1;
-                    }
-
-                    motorManager.getLeftMotor1().setPower(leftCorrecion);
-                    motorManager.getRightMotor1().setPower(rightCorrection);
-                    motorManager.getLeftMotor2().setPower(leftCorrecion);
-                    motorManager.getRightMotor2().setPower(rightCorrection);
-                }
+            {
+                gyroCorrection.GyroCorrection(speed);
+            }
         }
     }
 }
