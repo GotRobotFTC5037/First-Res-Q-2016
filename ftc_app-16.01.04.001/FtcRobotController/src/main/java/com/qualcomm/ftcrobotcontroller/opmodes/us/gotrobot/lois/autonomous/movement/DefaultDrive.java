@@ -4,7 +4,6 @@ import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.contr
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.sensors.SensorManager;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.control.StateManager;
-import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.movement.GyroCorrection;
 
 public class DefaultDrive
 {
@@ -12,8 +11,6 @@ public class DefaultDrive
     StateManager stateManager;
     MotorManager motorManager;
     SensorManager sensorManager;
-    private GyroCorrection gyroCorrection = new GyroCorrection(presets, stateManager, motorManager,
-            sensorManager);
 
     double rightCorrection = 0;
     double leftCorrecion = 0;
@@ -26,6 +23,9 @@ public class DefaultDrive
         this.motorManager = motorManager;
         this.sensorManager = sensorManager;
     }
+
+    private GyroCorrection gyroCorrection = new GyroCorrection(presets, stateManager, motorManager,
+            sensorManager);
 
     public void driveWithCorrection(double speed, int targetDistance)
     {
