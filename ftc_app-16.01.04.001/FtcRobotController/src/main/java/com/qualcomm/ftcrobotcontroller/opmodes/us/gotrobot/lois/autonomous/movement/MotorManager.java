@@ -2,6 +2,8 @@ package com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.move
 
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.control.Preferences;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MotorManager
 {
@@ -12,12 +14,14 @@ public class MotorManager
     private DcMotor leftMotor2;
     private DcMotor rightMotor2;
 
+    HardwareMap hardwareMap = new HardwareMap();
+
     public MotorManager(Preferences presets)
     {
         this.presets = presets;
     }
 
-    public DcMotor getRightMotor1() {
+    private DcMotor getRightMotor1() {
         return rightMotor1;
     }
 
@@ -25,7 +29,7 @@ public class MotorManager
         this.rightMotor1 = rightMotor1;
     }
 
-    public DcMotor getLeftMotor1() {
+    private DcMotor getLeftMotor1() {
         return leftMotor1;
     }
 
@@ -33,7 +37,7 @@ public class MotorManager
         this.leftMotor1 = leftMotor1;
     }
 
-    public DcMotor getLeftMotor2() {
+    private DcMotor getLeftMotor2() {
         return leftMotor2;
     }
 
@@ -41,7 +45,7 @@ public class MotorManager
         this.leftMotor2 = leftMotor2;
     }
 
-    public DcMotor getRightMotor2() {
+    private DcMotor getRightMotor2() {
         return rightMotor2;
     }
 
@@ -57,9 +61,9 @@ public class MotorManager
     public boolean robotReachedTargetDistance(double targetDistance)
     {
         if(Math.abs(getLeftMotor2().getCurrentPosition()) >=
-                Math.abs(calculateEncoderValue(targetDistance))&&
-                Math.abs(getRightMotor2().getCurrentPosition()) >=
-                        Math.abs(calculateEncoderValue(targetDistance)))
+           Math.abs(calculateEncoderValue(targetDistance)) &&
+           Math.abs(getRightMotor2().getCurrentPosition()) >=
+           Math.abs(calculateEncoderValue(targetDistance)))
         {
             return true;
         }
@@ -67,5 +71,62 @@ public class MotorManager
         {
             return false;
         }
+    }
+
+    public void setLeftPower(double speed)
+    {
+        getLeftMotor1().setPower(speed);
+        getLeftMotor2().setPower(speed);
+    }
+
+    public void setRightPower(double speed)
+    {
+        getRightMotor1().setPower(-speed);
+        getRightMotor2().setPower(-speed);
+    }
+
+    public void stopAllMotors()
+    {
+        getLeftMotor1().setPower(0);
+        getLeftMotor2().setPower(0);
+        getRightMotor1().setPower(0);
+        getRightMotor2().setPower(0);
+    }
+
+    public void refreshEncoders()
+    {
+        getRightMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
+        getLeftMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
+
+        getLeftMotor2().setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        getRightMotor2().setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+    }
+
+    public void runWithoutEncoders()
+    {
+        getLeftMotor2().setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        getRightMotor2().setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+    }
+
+    public void init() {
+        /* */
+        setLeftMotor1(hardwareMap.dcMotor.get("motor_left_1"));
+        getLeftMotor1().setDirection(DcMotor.Direction.REVERSE);
+
+        /* */
+        setRightMotor1(hardwareMap.dcMotor.get("motor_right_1"));
+        getRightMotor1().setDirection(DcMotor.Direction.REVERSE);
+
+        /* */
+        setLeftMotor2(hardwareMap.dcMotor.get("motor_left_2"));
+        getLeftMotor2().setDirection(DcMotor.Direction.REVERSE);
+
+        /* */
+        setLeftMotor2(hardwareMap.dcMotor.get("motor_right_2"));
+        getLeftMotor2().setDirection(DcMotor.Direction.FORWARD);
+
+        /* */
+        getRightMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
+        getLeftMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
     }
 }

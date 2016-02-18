@@ -1,8 +1,5 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous;
 
-import android.content.Context;
-import android.hardware.Sensor;
-
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.control.Preferences;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.movement.MotorManager;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.movement.PressBeaconButon;
@@ -13,8 +10,6 @@ import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.movem
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.movement.EopdTurn;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.movement.DefaultTurn;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.movement.UltrasonicDrive;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Lois
@@ -82,24 +77,7 @@ public class Lois
         getServoManager().getMountainServoRight().setPosition(1.0);
 
         /* */
-        getMotorManager().setLeftMotor1(hardwareMap.dcMotor.get("motor_left_1"));
-        getMotorManager().getLeftMotor1().setDirection(DcMotor.Direction.REVERSE);
-
-        /* */
-        getMotorManager().setRightMotor1(hardwareMap.dcMotor.get("motor_right_1"));
-        getMotorManager().getRightMotor1().setDirection(DcMotor.Direction.REVERSE);
-
-        /* */
-        getMotorManager().setLeftMotor2(hardwareMap.dcMotor.get("motor_left_2"));
-        getMotorManager().getLeftMotor2().setDirection(DcMotor.Direction.REVERSE);
-
-        /* */
-        getMotorManager().setLeftMotor2(hardwareMap.dcMotor.get("motor_right_2"));
-        getMotorManager().getLeftMotor2().setDirection(DcMotor.Direction.FORWARD);
-
-        /* */
-        getMotorManager().getRightMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
-        getMotorManager().getLeftMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorManager.init();
 
         /* */
         getSensorManager().getLightSensorHolder().setLightSensor
