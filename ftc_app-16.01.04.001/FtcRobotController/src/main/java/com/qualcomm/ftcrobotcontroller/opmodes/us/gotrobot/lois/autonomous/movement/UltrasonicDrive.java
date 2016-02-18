@@ -3,7 +3,6 @@ package com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.move
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.control.Preferences;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.sensors.SensorManager;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.control.StateManager;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 
 public class UltrasonicDrive
 {
@@ -26,29 +25,19 @@ public class UltrasonicDrive
 
     public void ultrasonicDriveWithCorrection(double speed, double ThreshholdDistance)
     {
-        double errorCorrection = speed/10;
-
         if (stateManager.getStateStage() == 0)
         {
-            motorManager.getRightMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
-            motorManager.getLeftMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
-
-            motorManager.getLeftMotor2().setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-            motorManager.getRightMotor2().setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+            motorManager.refreshEncoders();
 
             if (speed > 0)
             {
-                motorManager.getLeftMotor1().setPower(speed);
-                motorManager.getRightMotor1().setPower(-speed);
-                motorManager.getLeftMotor2().setPower(speed);
-                motorManager.getRightMotor2().setPower(-speed);
+                motorManager.setLeftPower(speed);
+                motorManager.setRightPower(speed);
             }
             else if (speed < 0)
             {
-                motorManager.getLeftMotor1().setPower(-speed);
-                motorManager.getRightMotor1().setPower(speed);
-                motorManager.getLeftMotor2().setPower(-speed);
-                motorManager.getRightMotor2().setPower(speed);
+                motorManager.setLeftPower(-speed);
+                motorManager.setRightPower(-speed);
             }
 
             stateManager.continueCommand();
@@ -57,10 +46,7 @@ public class UltrasonicDrive
         {
             if(ThreshholdDistance >= sensorManager.getUltrasonicSensorHolder().getLevel() && sensorManager.getUltrasonicSensorHolder().getLevel() != 0)
             {
-                motorManager.getLeftMotor1().setPower(0);
-                motorManager.getRightMotor1().setPower(0);
-                motorManager.getLeftMotor2().setPower(0);
-                motorManager.getRightMotor2().setPower(0);
+                motorManager.stopAllMotors();
 
                 stateManager.continueProgram();
             }

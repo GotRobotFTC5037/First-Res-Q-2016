@@ -2,7 +2,6 @@ package com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.move
 
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.control.Preferences;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.sensors.SensorManager;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.control.StateManager;
 
 public class DefaultDrive
@@ -11,9 +10,6 @@ public class DefaultDrive
     StateManager stateManager;
     MotorManager motorManager;
     SensorManager sensorManager;
-
-    double rightCorrection = 0;
-    double leftCorrecion = 0;
 
     public DefaultDrive(Preferences presets, StateManager stateManager, MotorManager motorManager,
                         SensorManager sensorManager)
@@ -31,25 +27,17 @@ public class DefaultDrive
     {
         if (stateManager.getStateStage() == 0)
         {
-            motorManager.getRightMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
-            motorManager.getLeftMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
-
-            motorManager.getLeftMotor2().setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-            motorManager.getRightMotor2().setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+            motorManager.refreshEncoders();
 
             if (speed > 0)
             {
-                motorManager.getLeftMotor1().setPower(speed);
-                motorManager.getRightMotor1().setPower(-speed);
-                motorManager.getLeftMotor2().setPower(speed);
-                motorManager.getRightMotor2().setPower(-speed);
+                motorManager.setLeftPower(speed);
+                motorManager.setRightPower(speed);
             }
             else if (speed < 0)
             {
-                motorManager.getLeftMotor1().setPower(-speed);
-                motorManager.getRightMotor1().setPower(speed);
-                motorManager.getLeftMotor2().setPower(-speed);
-                motorManager.getRightMotor2().setPower(speed);
+                motorManager.setLeftPower(-speed);
+                motorManager.setRightPower(-speed);
             }
 
             stateManager.continueCommand();
@@ -58,10 +46,7 @@ public class DefaultDrive
         {
             if(motorManager.robotReachedTargetDistance(targetDistance))
             {
-                motorManager.getLeftMotor1().setPower(0);
-                motorManager.getRightMotor1().setPower(0);
-                motorManager.getLeftMotor2().setPower(0);
-                motorManager.getRightMotor2().setPower(0);
+                motorManager.stopAllMotors();
 
                 stateManager.continueProgram();
             }

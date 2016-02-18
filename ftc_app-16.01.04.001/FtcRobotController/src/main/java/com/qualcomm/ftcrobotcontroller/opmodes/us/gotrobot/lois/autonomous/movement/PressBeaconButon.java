@@ -3,7 +3,6 @@ package com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.move
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.control.Preferences;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.control.StateManager;
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.sensors.SensorManager;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 
 public class PressBeaconButon
 {
@@ -25,10 +24,8 @@ public class PressBeaconButon
         this.sensorManager = sensorManager;
     }
 
-    private double calcEncoderValue(double inches)
-    {
-        return (1440 * (inches/(Math.PI * presets.getWHEEL_DIAMETER()))) * presets.getGEAR_RATIO();
-    } //calcEncoderValue
+    private GyroCorrection gyroCorrection = new GyroCorrection(presets, stateManager, motorManager,
+            sensorManager);
 
     public void driveWithCorrection(double speed, int ThreshholdDistance)
     {
@@ -46,64 +43,31 @@ public class PressBeaconButon
             stateManager.continueCommand();
         }
         else if (stateManager.getStateStage() == 1) {
-            motorManager.getRightMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
-            motorManager.getLeftMotor2().setMode(DcMotorController.RunMode.RESET_ENCODERS);
-
-            motorManager.getLeftMotor2().setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-            motorManager.getRightMotor2().setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+            motorManager.refreshEncoders();
 
             if (speed > 0) {
-                motorManager.getLeftMotor1().setPower(speed);
-                motorManager.getRightMotor1().setPower(-speed);
-                motorManager.getLeftMotor2().setPower(speed);
-                motorManager.getRightMotor2().setPower(-speed);
-            } else if (speed < 0) {
-                motorManager.getLeftMotor1().setPower(-speed);
-                motorManager.getRightMotor1().setPower(speed);
-                motorManager.getLeftMotor2().setPower(-speed);
-                motorManager.getRightMotor2().setPower(speed);
+                motorManager.setLeftPower(speed);
+                motorManager.setRightPower(speed);
+            } else if (speed < 0)
+            {
+                motorManager.setLeftPower(-speed);
+                motorManager.setRightPower(-speed);
             }
 
             stateManager.continueCommand();
         }
         else if (stateManager.getStateStage() == 2)
         {
-            if(ThreshholdDistance >= sensorManager.getUltrasonicSensorHolder().getLevel() && sensorManager.getUltrasonicSensorHolder().getLevel() != 0)
+            if(ThreshholdDistance >= sensorManager.getUltrasonicSensorHolder().getLevel() &&
+               sensorManager.getUltrasonicSensorHolder().getLevel() != 0)
             {
-                motorManager.getLeftMotor1().setPower(0);
-                motorManager.getRightMotor1().setPower(0);
-                motorManager.getLeftMotor2().setPower(0);
-                motorManager.getRightMotor2().setPower(0);
+                motorManager.stopAllMotors();
 
                 stateManager.continueProgram();
             }
             else
             {
-                    leftCorrecion = speed-(sensorManager.getGyroscopeHolder().getRotation()*presets.getGYRO_ERROR_CORRECTION());
-                    rightCorrection = speed+(sensorManager.getGyroscopeHolder().getRotation()*presets.getGYRO_ERROR_CORRECTION());
-
-                    if (leftCorrecion>1)
-                    {
-                        leftCorrecion = 1;
-                    }
-                    else if (leftCorrecion<-1)
-                    {
-                        leftCorrecion = -1;
-                    }
-
-                    if (rightCorrection>1)
-                    {
-                        rightCorrection = 1;
-                    }
-                    else if (rightCorrection<-1)
-                    {
-                        rightCorrection = -1;
-                    }
-
-                    motorManager.getLeftMotor1().setPower(leftCorrecion);
-                    motorManager.getRightMotor1().setPower(rightCorrection);
-                    motorManager.getLeftMotor2().setPower(leftCorrecion);
-                    motorManager.getRightMotor2().setPower(rightCorrection);
+                    gyroCorrection.GyroCorrection(speed);
             }
         }
     }

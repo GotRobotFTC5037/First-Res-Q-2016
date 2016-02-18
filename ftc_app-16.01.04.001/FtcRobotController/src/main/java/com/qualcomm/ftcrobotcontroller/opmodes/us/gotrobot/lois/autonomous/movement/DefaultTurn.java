@@ -22,22 +22,17 @@ public class DefaultTurn
     {
         if (stateManager.getStateStage() == 0)
         {
-            motorManager.getLeftMotor2().setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-            motorManager.getRightMotor2().setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+            motorManager.runWithoutEncoders();
 
             if (degrees < 0)
             {
-                motorManager.getLeftMotor1().setPower(speed);
-                motorManager.getRightMotor1().setPower(speed);
-                motorManager.getLeftMotor2().setPower(speed);
-                motorManager.getRightMotor2().setPower(speed);
+                motorManager.setRightPower(-speed);
+                motorManager.setLeftPower(speed);
             }
             else if (degrees > 0)
             {
-                motorManager.getLeftMotor1().setPower(-speed);
-                motorManager.getRightMotor1().setPower(-speed);
-                motorManager.getLeftMotor2().setPower(-speed);
-                motorManager.getRightMotor2().setPower(-speed);
+                motorManager.setRightPower(speed);
+                motorManager.setLeftPower(-speed);
             }
 
             stateManager.continueCommand();
@@ -48,10 +43,7 @@ public class DefaultTurn
             {
                 if (sensorManager.getGyroscopeHolder().getRotation() >= degrees)
                 {
-                    motorManager.getLeftMotor1().setPowerFloat();
-                    motorManager.getRightMotor2().setPowerFloat();
-                    motorManager.getLeftMotor2().setPowerFloat();
-                    motorManager.getRightMotor2().setPowerFloat();
+                    motorManager.stopAllMotors();
 
                     sensorManager.getGyroscopeHolder().resetRotation();
 
@@ -62,10 +54,7 @@ public class DefaultTurn
             {
                 if (sensorManager.getGyroscopeHolder().getRotation() <= degrees)
                 {
-                    motorManager.getLeftMotor1().setPowerFloat();
-                    motorManager.getRightMotor2().setPowerFloat();
-                    motorManager.getLeftMotor2().setPowerFloat();
-                    motorManager.getRightMotor2().setPowerFloat();
+                    motorManager.stopAllMotors();
 
                     sensorManager.getGyroscopeHolder().resetRotation();
 

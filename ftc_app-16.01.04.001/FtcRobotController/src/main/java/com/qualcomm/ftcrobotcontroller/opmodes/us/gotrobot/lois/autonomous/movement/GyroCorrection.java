@@ -25,8 +25,10 @@ public class GyroCorrection
 
     public void GyroCorrection(double speed)
     {
-        leftCorrecion = speed-(sensorManager.getGyroscopeHolder().getRotation()*presets.getGYRO_ERROR_CORRECTION());
-        rightCorrection = speed+(sensorManager.getGyroscopeHolder().getRotation()*presets.getGYRO_ERROR_CORRECTION());
+        leftCorrecion = speed - (sensorManager.getGyroscopeHolder().getRotation() *
+                presets.getGYRO_ERROR_CORRECTION());
+        rightCorrection = speed + (sensorManager.getGyroscopeHolder().getRotation() *
+                presets.getGYRO_ERROR_CORRECTION());
 
         if (leftCorrecion>1)
         {
@@ -46,9 +48,7 @@ public class GyroCorrection
             rightCorrection = -1;
         }
 
-        motorManager.getLeftMotor1().setPower(leftCorrecion);
-        motorManager.getRightMotor1().setPower(rightCorrection);
-        motorManager.getLeftMotor2().setPower(leftCorrecion);
-        motorManager.getRightMotor2().setPower(rightCorrection);
+        motorManager.setLeftPower(leftCorrecion);
+        motorManager.setRightPower(rightCorrection);
     }
 }

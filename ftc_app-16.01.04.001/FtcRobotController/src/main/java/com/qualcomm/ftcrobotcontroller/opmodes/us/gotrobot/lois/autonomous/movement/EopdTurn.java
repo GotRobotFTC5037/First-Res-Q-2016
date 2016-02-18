@@ -21,34 +21,28 @@ public class EopdTurn
     {
         if (stateManager.getStateStage() == 0)
         {
-            motorManager.getLeftMotor2().setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-            motorManager.getRightMotor2().setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+            motorManager.runWithoutEncoders();
 
             if (speed < 0)
             {
-                motorManager.getLeftMotor1().setPower(speed);
-                motorManager.getRightMotor1().setPower(speed);
-                motorManager.getLeftMotor2().setPower(speed);
-                motorManager.getRightMotor2().setPower(speed);
+                motorManager.setRightPower(-speed);
+                motorManager.setLeftPower(speed);
             }
             else if (speed > 0)
             {
-                motorManager.getLeftMotor1().setPower(-speed);
-                motorManager.getRightMotor1().setPower(-speed);
-                motorManager.getLeftMotor2().setPower(-speed);
-                motorManager.getRightMotor2().setPower(-speed);
+                motorManager.setRightPower(speed);
+                motorManager.setLeftPower(-speed);
             }
 
             stateManager.continueCommand();
         }
         else if(stateManager.getStateStage() == 1)
         {
-            if (sensorManager.getLightSensorHolder().getInitalEOPDValue()+15<sensorManager.getLightSensorHolder().getLightDetected() || Math.abs(sensorManager.getGyroscopeHolder().getRotation()) >= Math.abs(maxTurn))
+            if (sensorManager.getLightSensorHolder().getInitalEOPDValue()+15 <
+                sensorManager.getLightSensorHolder().getLightDetected() ||
+                Math.abs(sensorManager.getGyroscopeHolder().getRotation()) >= Math.abs(maxTurn))
             {
-                motorManager.getLeftMotor1().setPower(0);
-                motorManager.getRightMotor1().setPower(0);
-                motorManager.getLeftMotor2().setPower(0);
-                motorManager.getRightMotor2().setPower(0);
+                motorManager.stopAllMotors();
 
                 sensorManager.getGyroscopeHolder().resetRotation();
 
