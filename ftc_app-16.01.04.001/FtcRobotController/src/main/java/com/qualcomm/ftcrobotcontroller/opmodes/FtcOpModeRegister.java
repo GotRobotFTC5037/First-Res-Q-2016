@@ -32,6 +32,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.autonomous.programs.AutoBlue;
+import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.teleop.Beta;
+import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.teleop.TeleOpBroken;
+import com.qualcomm.ftcrobotcontroller.opmodes.us.gotrobot.lois.teleop.TeleOpOld;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
@@ -42,6 +45,9 @@ public class FtcOpModeRegister implements OpModeRegister
 {
   public void register(OpModeManager manager)
   {
-    manager.register("Auto Blue 1", AutoBlue.class);
+    //manager.register("Auto Blue 1", AutoBlue.class);
+    //manager.register("Teleop", TeleOp.class);
+    //manager.register("TeleopOld", TeleOpOld.class);
+    manager.register("Beta", Beta.class);
   }
 }
